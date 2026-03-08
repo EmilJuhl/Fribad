@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frederiksdal Fribad — Brasiliansk Churrasco ved Furesøen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --coral:        #E8765A;
+      --coral-light:  #F0977F;
+      --gold:         #F4B942;
+      --gold-light:   #F8CC70;
+      --lavender:     #7B6BAE;
+      --lake-deep:    #1C3A5E;
+      --lake-mid:     #2B5C7A;
+      --night:        #0D1F35;
+      --sand:         #F0E8D8;
+      --cream:        #FAF6EF;
+      --warm-white:   #FDF9F4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--warm-white);
+      color: var(--night);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.022;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── PAGE ROUTING ── */
+    #pages { flex: 1; }
+    .page { display: none; }
+    .page.active { display: block; }
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .page-enter { animation: pageFadeIn 0.38s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+    /* Non-home pages need space for fixed nav */
+    .nav-push { height: 72px; }
+
+    /* ── NAV ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 2.5rem;
+      transition: background 0.5s ease, padding 0.4s ease, box-shadow 0.4s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(13,31,53,0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: 0.75rem 2.5rem;
+      box-shadow: 0 1px 0 rgba(244,185,66,0.12);
+    }
+    .nav-logo { cursor: pointer; }
+    .nav-logo img { height: 72px; filter: url(#rm-white) drop-shadow(0 2px 24px rgba(0,0,0,0.7)) drop-shadow(0 0 16px rgba(0,0,0,0.4)); }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(253,249,244,0.82); text-decoration: none;
+      transition: color 0.2s; position: relative; cursor: pointer;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px; background: var(--gold);
+      transform: scaleX(0); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .nav-links a:hover,
+    .nav-links a.nav-active { color: var(--gold); }
+    .nav-links a:hover::after,
+    .nav-links a.nav-active::after { transform: scaleX(1); }
+    .nav-book {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--night); background: var(--coral);
+      padding: 0.6rem 1.6rem; border-radius: 2px; text-decoration: none;
+      transition: background 0.2s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      box-shadow: 0 3px 14px rgba(232,118,90,0.38);
+    }
+    .nav-book:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 22px rgba(244,185,66,0.42); }
+    .nav-book:active { transform: translateY(0); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; height: 100vh; min-height: 680px;
+      display: flex; align-items: flex-end; padding-bottom: 9vh; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('./Skærmbillede%202026-03-07%20kl.%2013.00.19.png') center 65% / cover no-repeat;
+      animation: heroZoom 18s ease-out forwards;
+      transform-origin: center center;
+    }
+    @keyframes heroZoom { from { transform: scale(1.09); } to { transform: scale(1.0); } }
+
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(13,31,53,0.97) 0%,
+        rgba(13,31,53,0.82) 30%,
+        rgba(13,31,53,0.45) 52%,
+        rgba(13,31,53,0.1) 72%,
+        transparent 100%
+      );
+    }
+    .hero-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 55%, rgba(232,118,90,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 60%, rgba(244,185,66,0.12) 0%, transparent 55%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 2.5rem;
+    }
+    .hero-season {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: rgba(244,185,66,0.1); border: 1px solid rgba(244,185,66,0.28);
+      border-radius: 2px; padding: 0.45rem 0.9rem; margin-bottom: 1.4rem;
+      opacity: 0; animation: fadeUp 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .hero-season-dot {
+      width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.45;} }
+    .hero-season span {
+      font-size: 0.67rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #ffffff;
+    }
+    .hero-eyebrow {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(253,249,244,0.8);
+      margin-bottom: 1rem;
+      opacity: 0; animation: fadeUp 0.7s 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.8rem, 8.5vw, 8rem);
+      font-weight: 300; font-style: italic;
+      line-height: 1.01; letter-spacing: -0.025em;
+      color: var(--warm-white); margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.9s 0.48s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .hero-title .accent { color: var(--coral); }
+    .hero-sub {
+      font-size: 1.02rem; font-weight: 300; letter-spacing: 0.02em;
+      color: rgba(240,232,216,0.82); line-height: 1.72; max-width: 440px;
+      margin-bottom: 2.6rem;
+      opacity: 0; animation: fadeUp 0.8s 0.62s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .hero-ctas {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.8s 0.76s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--night); background: var(--coral);
+      padding: 0.88rem 2.2rem; border-radius: 2px; text-decoration: none;
+      transition: background 0.2s, transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(232,118,90,0.42);
+      cursor: pointer; border: none; font-family: 'Jost', sans-serif;
+    }
+    .btn-primary:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(244,185,66,0.46); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--warm-white);
+      border: 1px solid rgba(253,249,244,0.32); padding: 0.88rem 2.2rem;
+      border-radius: 2px; text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, transform 0.22s;
+      cursor: pointer;
+    }
+    .btn-ghost:hover { border-color: rgba(253,249,244,0.65); background: rgba(253,249,244,0.07); transform: translateY(-2px); }
+    .btn-ghost:active { transform: translateY(0); }
+
+    .hero-scroll {
+      position: absolute; bottom: 2.8rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      cursor: pointer; opacity: 0;
+      animation: fadeIn 1s 1.3s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .hero-scroll span {
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(240,232,216,0.45);
+    }
+    .hero-scroll-line {
+      width: 1px; height: 44px;
+      background: linear-gradient(to bottom, rgba(240,232,216,0.45), transparent);
+      animation: scrollPulse 2.2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%,100%{opacity:0.5;} 55%{opacity:1;transform:scaleY(0.65);} }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.08s; }
+    .d2 { transition-delay: 0.17s; }
+    .d3 { transition-delay: 0.27s; }
+    .d4 { transition-delay: 0.38s; }
+
+    /* ── SECTION LABELS ── */
+    .s-label {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--coral); margin-bottom: 0.9rem;
+    }
+    .s-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.1rem, 3.8vw, 3.2rem);
+      font-weight: 400; line-height: 1.14; color: var(--night);
+      margin-bottom: 2.5rem;
+    }
+    .s-title.light { color: var(--warm-white); text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+
+    /* ── WELCOME ── */
+    #welcome {
+      background: var(--cream); padding: 8rem 2.5rem 7rem;
+      position: relative;
+    }
+    #welcome::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--coral) 30%, var(--gold) 70%, transparent 100%);
+    }
+    .welcome-inner {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5.5rem; align-items: center;
+    }
+    .welcome-text h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.3rem, 4vw, 3.6rem);
+      font-weight: 400; font-style: italic;
+      line-height: 1.13; color: var(--night); margin-bottom: 1.5rem;
+    }
+    .welcome-text h2 em { color: var(--coral); font-style: italic; }
+    .welcome-text p {
+      font-size: 0.97rem; line-height: 1.82; color: #3A4B5C;
+      font-weight: 300; margin-bottom: 1.25rem;
+    }
+    .welcome-quote {
+      margin-top: 2rem; padding-left: 1.4rem;
+      border-left: 3px solid var(--coral);
+    }
+    .welcome-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.22rem; font-style: italic; font-weight: 400;
+      line-height: 1.55; color: var(--lake-deep); margin: 0;
+    }
+    .welcome-img {
+      position: relative; aspect-ratio: 4/3;
+      border-radius: 3px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(28,58,94,0.18), 0 6px 18px rgba(28,58,94,0.1);
+    }
+    .welcome-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .welcome-img:hover img { transform: scale(1.04); }
+    .welcome-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 55%, rgba(28,58,94,0.28) 100%);
+      pointer-events: none;
+    }
+
+    /* ── FEATURES ── */
+    #features { background: var(--warm-white); padding: 7rem 2.5rem; }
+    .features-inner { max-width: 1240px; margin: 0 auto; }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
+      margin-top: 0.5rem;
+    }
+    .feat-card {
+      background: var(--cream); padding: 2.8rem 2.4rem;
+      position: relative; overflow: hidden;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+    .feat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--coral), var(--gold));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+    }
+    .feat-card:hover::before { transform: scaleX(1); }
+    .feat-card:hover { background: #F4EDE1; }
+    .feat-icon {
+      width: 36px; height: 36px; margin-bottom: 1.4rem; display: block;
+      color: var(--coral);
+    }
+    .feat-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .feat-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem; font-weight: 500; line-height: 1.18;
+      color: var(--night); margin-bottom: 0.9rem;
+    }
+    .feat-card p {
+      font-size: 0.9rem; line-height: 1.78; color: #4B5C6E;
+      font-weight: 300; margin-bottom: 1.5rem;
+    }
+    .feat-link {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--coral); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: gap 0.25s ease, color 0.2s ease;
+    }
+    .feat-link::after { content: '→'; }
+    .feat-link:hover { color: var(--lake-deep); gap: 0.7rem; }
+
+    /* ── MENU ── */
+    #menu {
+      background: var(--night); padding: 8rem 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    #menu::before {
+      content: ''; position: absolute; inset: 0;
+      background: url('https://fribad.dk/wp-content/uploads/2018/04/PPS_2857.jpg') center / cover no-repeat;
+      opacity: 0.1; mix-blend-mode: luminosity;
+    }
+    #menu::after {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 65% 55% at 75% 45%, rgba(244,185,66,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 60% at 20% 80%, rgba(232,118,90,0.06) 0%, transparent 55%);
+    }
+    .menu-inner { max-width: 1240px; margin: 0 auto; position: relative; z-index: 1; }
+    .menu-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 4.5rem;
+    }
+    .menu-header .s-label { color: var(--gold); }
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5rem; }
+    .menu-col h3, .menu-grid > div > h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 400; color: var(--gold);
+      padding-bottom: 0.85rem; border-bottom: 1px solid rgba(244,185,66,0.2);
+      margin-bottom: 1.3rem;
+    }
+    .menu-items { list-style: none; }
+    .menu-items li {
+      font-size: 0.92rem; color: rgba(240,232,216,0.76); font-weight: 300;
+      padding: 0.58rem 0; border-bottom: 1px solid rgba(240,232,216,0.07);
+      display: flex; align-items: center; gap: 0.65rem;
+    }
+    .menu-items li::before {
+      content: ''; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--coral); flex-shrink: 0;
+    }
+    .pricing-block {
+      margin-top: 4.5rem; padding-top: 3rem;
+      border-top: 1px solid rgba(240,232,216,0.1);
+    }
+    .pricing-block h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem; font-weight: 400; color: var(--warm-white);
+      margin-bottom: 1.6rem;
+    }
+    .price-grid {
+      display: grid; grid-template-columns: repeat(5,1fr); gap: 1px;
+      background: rgba(240,232,216,0.07);
+    }
+    .price-item {
+      background: rgba(13,31,53,0.75); padding: 1.6rem 1rem; text-align: center;
+      transition: background 0.25s ease;
+    }
+    .price-item:hover { background: rgba(43,92,122,0.5); }
+    .price-label {
+      font-size: 0.68rem; font-weight: 500; letter-spacing: 0.09em;
+      text-transform: uppercase; color: rgba(240,232,216,0.45);
+      margin-bottom: 0.55rem; line-height: 1.4;
+    }
+    .price-amt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem; font-weight: 300; color: var(--gold); line-height: 1;
+    }
+    .price-amt sup { font-size: 0.9rem; font-weight: 400; vertical-align: super; }
+    .price-note { font-size: 0.68rem; color: rgba(240,232,216,0.35); margin-top: 0.3rem; }
+    .menu-small {
+      margin-top: 1.2rem; font-size: 0.72rem;
+      color: rgba(240,232,216,0.28); font-weight: 300;
+    }
+
+    /* ── EVENTS ── */
+    #events { background: var(--cream); padding: 8rem 2.5rem 7rem; }
+    .events-inner { max-width: 1240px; margin: 0 auto; }
+    .events-top {
+      display: grid; grid-template-columns: 1fr 1.15fr;
+      gap: 5.5rem; align-items: start; margin-bottom: 4rem;
+    }
+    .events-text p {
+      font-size: 0.96rem; line-height: 1.82; color: #3A4B5C;
+      font-weight: 300; margin-bottom: 1.2rem;
+    }
+    .events-img {
+      aspect-ratio: 4/3; border-radius: 3px; overflow: hidden;
+      box-shadow: 0 20px 58px rgba(28,58,94,0.16), 0 5px 15px rgba(28,58,94,0.08);
+    }
+    .events-img img { width: 100%; height: 100%; object-fit: cover; }
+    .venues-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem;
+    }
+    .venue-card {
+      background: var(--warm-white); border-radius: 3px; padding: 2.2rem 1.9rem;
+      border: 1px solid rgba(28,58,94,0.07);
+      transition: box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s;
+    }
+    .venue-card:hover {
+      box-shadow: 0 12px 42px rgba(232,118,90,0.13), 0 4px 12px rgba(28,58,94,0.07);
+      transform: translateY(-5px); border-color: rgba(232,118,90,0.22);
+    }
+    .venue-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.2rem; font-weight: 300; color: var(--coral); line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .venue-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 500; color: var(--night); margin-bottom: 0.8rem;
+    }
+    .venue-card p { font-size: 0.85rem; line-height: 1.72; color: #4B5C6E; font-weight: 300; }
+
+    /* ── HISTORY ── */
+    #history {
+      background: #0E2240; padding: 8rem 2.5rem;
+      position: relative; overflow: hidden;
+      border-top: 1px solid rgba(244,185,66,0.15);
+    }
+    #history::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 85% 15%, rgba(244,185,66,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 55% at 5% 90%, rgba(232,118,90,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(43,92,122,0.3) 0%, transparent 70%);
+    }
+    .history-inner {
+      max-width: 1240px; margin: 0 auto; position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
+    }
+    .history-text .s-label { color: var(--gold); }
+    .history-text p {
+      font-size: 0.96rem; line-height: 1.86; color: rgba(240,232,216,0.85);
+      font-weight: 300; margin-bottom: 1.2rem;
+    }
+    .history-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 2.5rem;
+    }
+    .h-stat {
+      padding: 1.5rem; background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(240,232,216,0.16); border-radius: 3px;
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+    .h-stat:hover { background: rgba(255,255,255,0.1); border-color: rgba(232,118,90,0.3); }
+    .h-stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem; font-weight: 300; color: var(--coral); line-height: 1;
+      margin-bottom: 0.35rem;
+      text-shadow: 0 0 30px rgba(232,118,90,0.35);
+    }
+    .h-stat p { font-size: 0.78rem; color: rgba(240,232,216,0.68); margin: 0; line-height: 1.5; font-weight: 400; }
+    .history-visual { position: relative; }
+    .history-img {
+      aspect-ratio: 4/5; border-radius: 3px; overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.4), 0 0 0 1px rgba(240,232,216,0.06);
+    }
+    .history-img img {
+      width: 100%; height: 100%; object-fit: cover; filter: saturate(0.9) brightness(0.95);
+      transition: filter 0.6s ease;
+    }
+    .history-img:hover img { filter: saturate(1.05) brightness(1); }
+    .history-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(17,37,64,0.1) 0%, transparent 35%, rgba(17,37,64,0.5) 100%);
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--cream); padding: 8rem 2.5rem;
+      border-top: 1px solid rgba(232,118,90,0.18);
+    }
+    .contact-inner {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.45fr; gap: 6rem;
+    }
+    .contact-img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      border-radius: 3px; margin-bottom: 2.5rem;
+      box-shadow: 0 12px 40px rgba(28,58,94,0.13), 0 3px 10px rgba(28,58,94,0.07);
+    }
+    .hours-block { margin-bottom: 2.4rem; }
+    .hours-block h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-weight: 500; color: var(--night); margin-bottom: 0.75rem;
+    }
+    .hours-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.5rem 0; border-bottom: 1px solid rgba(28,58,94,0.07);
+      font-size: 0.88rem; color: #3D4E60; font-weight: 300;
+    }
+    .hours-row .t { font-weight: 500; color: var(--night); }
+    .c-details { margin-top: 2rem; }
+    .c-row {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      margin-bottom: 0.85rem; font-size: 0.88rem; color: #3D4E60; font-weight: 300;
+    }
+    .c-row strong { font-weight: 500; color: var(--night); min-width: 70px; }
+    .c-row a { color: var(--coral); text-decoration: none; transition: color 0.2s; }
+    .c-row a:hover { color: var(--lake-deep); }
+    .contact-form {
+      background: var(--warm-white); padding: 2.8rem; border-radius: 3px;
+      border: 1px solid rgba(28,58,94,0.08);
+      box-shadow: 0 8px 40px rgba(28,58,94,0.07);
+    }
+    .contact-form h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem; font-weight: 400; color: var(--night); margin-bottom: 1.9rem;
+    }
+    .f-group { margin-bottom: 1.2rem; }
+    .f-label {
+      display: block; font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #4B5C6E; margin-bottom: 0.45rem;
+    }
+    .f-input {
+      width: 100%; padding: 0.75rem 1rem;
+      background: var(--warm-white); border: 1px solid rgba(28,58,94,0.14);
+      border-radius: 2px; font-family: 'Jost', sans-serif;
+      font-size: 0.9rem; font-weight: 300; color: var(--night);
+      transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+    }
+    .f-input:focus { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(232,118,90,0.11); }
+    textarea.f-input { height: 120px; resize: vertical; }
+    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .f-submit {
+      width: 100%; padding: 0.9rem;
+      background: var(--coral); color: var(--night); border: none; border-radius: 2px;
+      font-family: 'Jost', sans-serif; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s, transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(232,118,90,0.32);
+    }
+    .f-submit:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(244,185,66,0.42); }
+    .f-submit:active { transform: translateY(0); }
+    .f-submit:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--night); padding: 4.5rem 2.5rem 2.5rem; position: relative;
+      flex-shrink: 0;
+    }
+    footer::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--coral) 25%, var(--gold) 75%, transparent 100%);
+    }
+    .footer-inner { max-width: 1240px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; margin-bottom: 3.5rem;
+      padding-bottom: 3rem; border-bottom: 1px solid rgba(240,232,216,0.08);
+    }
+    .footer-brand img { height: 64px; margin-bottom: 1.1rem; filter: url(#rm-white) drop-shadow(0 2px 16px rgba(0,0,0,0.6)); }
+    .footer-brand p {
+      font-size: 0.84rem; line-height: 1.72; color: rgba(240,232,216,0.45);
+      font-weight: 300; max-width: 250px;
+    }
+    .footer-socials { display: flex; gap: 0.8rem; margin-top: 1.4rem; }
+    .s-link {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border: 1px solid rgba(240,232,216,0.14);
+      border-radius: 2px; color: rgba(240,232,216,0.45); text-decoration: none;
+      font-size: 0.8rem; font-weight: 500;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .s-link:hover { border-color: var(--coral); color: var(--coral); background: rgba(232,118,90,0.08); }
+    .footer-col h4 {
+      font-size: 0.66rem; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 1.3rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.6rem; }
+    .footer-col ul li a {
+      font-size: 0.84rem; font-weight: 300; color: rgba(240,232,216,0.5);
+      text-decoration: none; transition: color 0.2s; cursor: pointer;
+    }
+    .footer-col ul li a:hover { color: var(--coral); }
+    .footer-col p { font-size: 0.84rem; font-weight: 300; color: rgba(240,232,216,0.5); line-height: 1.72; }
+    .footer-col a { color: rgba(240,232,216,0.5); text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--coral); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-bottom p { font-size: 0.73rem; color: rgba(240,232,216,0.25); font-weight: 300; }
+
+    /* ── GLOBAL IMAGE SAFETY ── */
+    img { max-width: 100%; height: auto; }
+
+    /* ── HAMBURGER BUTTON ── */
+    .menu-toggle {
+      display: none;
+      background: none; border: none;
+      color: var(--warm-white); font-size: 1.7rem;
+      cursor: pointer; padding: 0.3rem 0.5rem;
+      line-height: 1; min-width: 44px; min-height: 44px;
+      align-items: center; justify-content: center;
+      transition: color 0.2s;
+    }
+    .menu-toggle:hover { color: var(--gold); }
+    .nav-book-mobile { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      /* Nav */
+      .menu-toggle { display: flex; }
+      .nav-book { display: none; }
+      .nav-logo img { height: 52px; }
+
+      .nav-links {
+        display: none;
+        position: absolute; top: 100%; left: 0; right: 0;
+        flex-direction: column; gap: 0;
+        background: rgba(13,31,53,0.97);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-top: 1px solid rgba(244,185,66,0.15);
+        padding: 0.5rem 0 1rem;
+        z-index: 198;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li a, .nav-links li { display: block; }
+      .nav-links a {
+        padding: 0.85rem 2rem;
+        font-size: 0.78rem; letter-spacing: 0.14em;
+        border-bottom: 1px solid rgba(253,249,244,0.06);
+        min-height: 44px; display: flex; align-items: center;
+      }
+      .nav-book-mobile { display: block; }
+      .nav-book-mobile a {
+        display: block; margin: 0.8rem 2rem 0;
+        text-align: center; padding: 0.75rem 1rem;
+        background: var(--coral); color: var(--night);
+        font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+        text-transform: uppercase; text-decoration: none;
+        border-radius: 2px; min-height: 44px;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      /* Layouts */
+      .welcome-inner, .events-top, .history-inner, .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .features-grid, .venues-grid { grid-template-columns: 1fr; }
+      .menu-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .price-grid { grid-template-columns: repeat(3,1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+
+      /* Section padding */
+      #welcome, #events, #history, #contact { padding: 5rem 1.5rem 4rem; }
+      #features { padding: 4rem 1.5rem; }
+      #menu { padding: 5rem 1.5rem; }
+      footer { padding: 3.5rem 1.5rem 2rem; }
+
+      /* Hero */
+      .hero-title { font-size: clamp(2.8rem, 10vw, 5rem); }
+      .hero-content { padding: 0 1.5rem; }
+      .hero-ctas { flex-direction: column; gap: 0.75rem; }
+      .hero-ctas .btn-primary, .hero-ctas .btn-ghost { text-align: center; justify-content: center; }
+
+      /* Feat cards */
+      .feat-card { padding: 2.2rem 1.8rem; }
+
+      /* Contact form */
+      .contact-form { padding: 2rem 1.4rem; }
+    }
+
+    @media (max-width: 580px) {
+      .footer-top { grid-template-columns: 1fr; }
+      .f-row { grid-template-columns: 1fr; }
+      .price-grid { grid-template-columns: repeat(2,1fr); }
+      .history-stats { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { flex-direction: column; gap: 0.6rem; text-align: center; }
+      #navbar { padding: 0.9rem 1.2rem; }
+
+      /* Hero on small phones */
+      .hero-title { font-size: clamp(2.4rem, 11vw, 3.5rem); }
+      .hero-sub { font-size: 0.92rem; }
+      .hero-season span { font-size: 0.6rem; }
+
+      /* Reduce section padding further */
+      #welcome, #events, #history, #contact { padding: 4rem 1.2rem 3rem; }
+      #features { padding: 3rem 1.2rem; }
+      #menu { padding: 4rem 1.2rem; }
+      footer { padding: 3rem 1.2rem 1.5rem; }
+
+      /* Features grid: 1 col */
+      .features-grid { grid-template-columns: 1fr; gap: 2px; }
+
+      /* Price grid */
+      .price-grid { grid-template-columns: 1fr 1fr; }
+
+      /* Venue cards */
+      .venues-grid { grid-template-columns: 1fr; }
+
+      /* Touch targets */
+      .btn-primary, .btn-ghost, .f-submit { min-height: 48px; }
+
+      /* Nav push on small screens */
+      .nav-push { height: 62px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SVG filter: removes white background from logo PNG -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="rm-white" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+               -1 -1 -1 3 0"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ════ NAV ════ -->
+<nav id="navbar">
+  <a class="nav-logo" data-page="hjem" href="#">
+    <img src="./Skærmbillede 2026-03-06 kl. 18.47.30.png" alt="Frederiksdal Fribad">
+  </a>
+  <ul class="nav-links">
+    <li><a data-page="restauranten" href="#">Restauranten</a></li>
+    <li><a data-page="selskaber" href="#">Selskaber</a></li>
+    <li><a data-page="omos" href="#">Om Os</a></li>
+    <li><a data-page="kontakt" href="#">Kontakt</a></li>
+    <li class="nav-book-mobile"><a href="https://www.dinnerbooking.com/dk/da-DK/booking/frederiksdal-fribad" target="_blank" rel="noopener">Book Bord</a></li>
+  </ul>
+  <a href="https://www.dinnerbooking.com/dk/da-DK/booking/frederiksdal-fribad" class="nav-book" target="_blank" rel="noopener">Book Bord</a>
+  <button class="menu-toggle" aria-label="Åbn menu" aria-expanded="false">☰</button>
+</nav>
+
+<!-- ════ PAGES ════ -->
+<div id="pages">
+
+  <!-- ─ HJEM ─ -->
+  <div class="page active" id="page-hjem">
+
+    <section id="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="hero-season">
+          <div class="hero-season-dot"></div>
+          <span>Sæson 2026 &nbsp;·&nbsp; 25. april – 28. september</span>
+        </div>
+        <p class="hero-eyebrow">Frederiksdal · Virum · Furesøen</p>
+        <h1 class="hero-title">
+          Oplev magien<br>
+          ved <span class="accent">Furesøen</span>
+        </h1>
+        <p class="hero-sub">
+          Brasiliansk churrasco og frisk salatbuffet — kun 15 meter fra vandet med solnedgangsudtsigt over søen.
+        </p>
+        <div class="hero-ctas">
+          <a href="https://www.dinnerbooking.com/dk/da-DK/booking/frederiksdal-fribad" class="btn-primary" target="_blank" rel="noopener">Book Bord</a>
+          <a class="btn-ghost" data-page="restauranten" href="#">Se Menuen</a>
+        </div>
+      </div>
+      <div class="hero-scroll" id="hero-scroll-btn">
+        <span>Scroll</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="features-inner">
+        <p class="s-label reveal">Hvad vi tilbyder</p>
+        <h2 class="s-title reveal d1">Tre oplevelser,<br>ét enestående sted</h2>
+        <div class="features-grid">
+          <div class="feat-card reveal" data-page="restauranten">
+            <span class="feat-icon"><svg viewBox="0 0 24 24"><path d="M12 2c0 0-4 4-4 8a4 4 0 0 0 8 0c0-4-4-8-4-8z"/><path d="M12 10c0 0-2 2-2 4a2 2 0 0 0 4 0c0-2-2-4-2-4z"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/></svg></span>
+            <h3>Restauranten</h3>
+            <p>Smag den autentiske brasilianske churrasco-oplevelse med frisk salatbuffet direkte ved søen. Åbent dagligt fra kl. 17 — med fokus på frisklavet mad og kvalitetsråvarer.</p>
+            <span class="feat-link">Se Menuen</span>
+          </div>
+          <div class="feat-card reveal d1" data-page="selskaber">
+            <span class="feat-icon"><svg viewBox="0 0 24 24"><path d="M8 3l-2 9h12L16 3H8z"/><line x1="6" y1="12" x2="18" y2="12"/><path d="M12 12v9"/><line x1="8" y1="21" x2="16" y2="21"/></svg></span>
+            <h3>Selskaber</h3>
+            <p>Afholder du en fejring for 30+ gæster? Vi byder på tre smukt beliggende venues med op til 85 siddende gæster og specialkomponerede churrasco-pakker til din begivenhed.</p>
+            <span class="feat-link">Læs Mere</span>
+          </div>
+          <div class="feat-card reveal d2" data-page="kontakt">
+            <span class="feat-icon"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9.5z"/><path d="M9 21V12h6v9"/></svg></span>
+            <h3>Churrasco Catering</h3>
+            <p>Vi kommer til dig! Vores erfarne grillmester og alt udstyr kører hjem til dig og tilbereder autentisk brasiliansk churrasco direkte i din have eller dit lokale.</p>
+            <span class="feat-link">Kontakt Os</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /page-hjem -->
+
+  <!-- ─ RESTAURANTEN ─ -->
+  <div class="page" id="page-restauranten">
+    <div class="nav-push"></div>
+
+    <section id="welcome">
+      <div class="welcome-inner">
+        <div class="welcome-text reveal">
+          <p class="s-label">Konceptet</p>
+          <h2>Et unikt sted<br>ved <em>søens bred</em></h2>
+          <p>Frederiksdal Fribad er et helt særligt sted, hvor naturen og maden mødes i perfekt harmoni. Vi er beliggende direkte ved Furesøen — Danmarks dybeste sø — omgivet af fredet natur med udsigt over det blanke vand.</p>
+          <p>Vores brasilianske churrasco tilberedes frisklavet over grillen med stor omhu for råvarer og smag. Mens kødet syder og duften spreder sig, kan du nyde den stemningsfulde udsigt og sommerens lange aftener ved søen.</p>
+          <div class="welcome-quote">
+            <p>"Kun 15 meter fra vandet — med solnedgangen over Furesøen som kulisse."</p>
+          </div>
+          <div style="margin-top: 2.2rem;">
+            <a href="#menu" class="btn-primary" style="background: var(--lake-deep); box-shadow: 0 4px 20px rgba(28,58,94,0.28); color: #ffffff;">Se Vores Menu</a>
+          </div>
+        </div>
+        <div class="welcome-img reveal d2">
+          <img src="./Skærmbillede 2026-03-07 kl. 10.45.15.png" alt="Udendørs servering ved Furesøen">
+        </div>
+      </div>
+    </section>
+
+    <section id="menu">
+      <div class="menu-inner">
+        <div class="menu-header reveal">
+          <div>
+            <p class="s-label">Vores Køkken</p>
+            <h2 class="s-title light">Menuen</h2>
+          </div>
+          <a href="https://fribad.dk/menu/" class="btn-ghost" target="_blank" rel="noopener" style="white-space:nowrap; margin-bottom: 0.6rem;">Se Fuld Menu ↗</a>
+        </div>
+        <div class="menu-grid">
+          <div class="reveal">
+            <h3>Churrasco fra Grillen</h3>
+            <ul class="menu-items" style="margin-top:1.2rem;">
+              <li>Picanha (Oksekød)</li>
+              <li>Hvidløgsmarineret nakkefilet</li>
+              <li>Kyllingelår</li>
+              <li>Lammecuvette</li>
+              <li>Slagterpølser fra grillen</li>
+              <li>Smørmakrelog og laks</li>
+            </ul>
+          </div>
+          <div class="reveal d1">
+            <h3>Salatbuffet</h3>
+            <ul class="menu-items" style="margin-top:1.2rem;">
+              <li>Hjemmebagt brød · Hummus · Tzatziki</li>
+              <li>Vandmelon med fetaost <span style="font-size:0.75em;opacity:0.6;">(GF)</span></li>
+              <li>Tomater, mozzarella, basilikum, balsamic <span style="font-size:0.75em;opacity:0.6;">(GF)</span></li>
+              <li>Pasta med hjemmelavet pesto og cherry-tomater</li>
+              <li>Broccolisalat med peberfrugt og rødløg</li>
+              <li>Ristede kartofler med rosmarin og timian</li>
+              <li>Flødekartofler · Bearnaisesauce · Daglig sauce</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pricing-block reveal">
+          <h3>Priser</h3>
+          <div class="price-grid">
+            <div class="price-item">
+              <p class="price-label">Churrasco + Salatbuffet</p>
+              <p class="price-amt"><sup>kr. </sup>285</p>
+              <p class="price-note">Voksne</p>
+            </div>
+            <div class="price-item">
+              <p class="price-label">Kun Salatbuffet</p>
+              <p class="price-amt"><sup>kr. </sup>220</p>
+              <p class="price-note">Voksne</p>
+            </div>
+            <div class="price-item">
+              <p class="price-label">Churrasco (børn u. 12)</p>
+              <p class="price-amt"><sup>kr. </sup>159</p>
+              <p class="price-note">Børn under 12</p>
+            </div>
+            <div class="price-item">
+              <p class="price-label">Churrasco + Vafler</p>
+              <p class="price-amt"><sup>kr. </sup>189</p>
+              <p class="price-note">Børn · 2 retter</p>
+            </div>
+            <div class="price-item">
+              <p class="price-label">Børneret</p>
+              <p class="price-amt"><sup>kr. </sup>75</p>
+              <p class="price-note">Pommes + nuggets</p>
+            </div>
+          </div>
+          <p class="menu-small">Allergener oplyses på forespørgsel &nbsp;·&nbsp; Vi deler ikke regninger</p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /page-restauranten -->
+
+  <!-- ─ SELSKABER ─ -->
+  <div class="page" id="page-selskaber">
+    <div class="nav-push"></div>
+
+    <section id="events">
+      <div class="events-inner">
+        <p class="s-label reveal">Private Fejringer</p>
+        <h2 class="s-title reveal d1">Selskaber ved søen</h2>
+        <div class="events-top">
+          <div class="events-text reveal">
+            <p>Har du en fest, jubilæum eller firmaevent du gerne vil gøre uforglemmelig? Vi arrangerer skræddersyede selskaber for grupper fra 30 og opefter i vores smukt beliggende lokaler direkte ved Furesøen.</p>
+            <p>Vælg mellem vores <strong>6-timers aftenmenu</strong> (17–23 eller 18–24) med det fulde churrasco-program — eller vores <strong>4-timers frokostmenu</strong> (11–15 eller 12–16). Begge inkluderer starter, kødvalg fra grillen, salatbuffet og dessert.</p>
+            <p>Vi tilbyder også bådture gennem vores lokale samarbejdspartner, så I kan opleve Furesøen fra vandoverfladen.</p>
+            <div style="margin-top: 2.2rem;">
+              <a class="btn-primary" data-page="kontakt" href="#">Forespørg om Selskab</a>
+            </div>
+          </div>
+          <div class="events-img reveal d2">
+            <img src="./Skærmbillede 2026-03-07 kl. 10.44.06.png" alt="Livredderen selskabslokale">
+          </div>
+        </div>
+        <div class="venues-grid">
+          <div class="venue-card reveal">
+            <p class="venue-num">80</p>
+            <h3>Udeserveringen</h3>
+            <p>Vores overdækkede udendørs terrasseplads med varmelamper. Perfekt til sommerlige selskaber med Furesøens stemning som naturlig baggrund.</p>
+          </div>
+          <div class="venue-card reveal d1">
+            <p class="venue-num">55</p>
+            <h3>Indendørs Lokalet</h3>
+            <p>Hyggeligt indendørs lokale til intime selskaber og fejringer, centralt beliggende i den historiske badebygning ved søen.</p>
+          </div>
+          <div class="venue-card reveal d2">
+            <p class="venue-num">85</p>
+            <h3>Livredderen</h3>
+            <p>Vores nyrenoverede selskabslokale — det største og smukkeste af vores venues, med plads til hele gæstelisten og en unik stemning.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /page-selskaber -->
+
+  <!-- ─ OM OS ─ -->
+  <div class="page" id="page-omos">
+    <div class="nav-push"></div>
+
+    <section id="history">
+      <div class="history-inner">
+        <div class="history-text">
+          <p class="s-label reveal">Vores Historie</p>
+          <h2 class="s-title light reveal d1">Siden 1943<br>ved Furesøen</h2>
+          <p class="reveal d2">Frederiksdal Fribad har en lang og rig historie. I 1943 åbnede stedet som offentligt fribad med omklædningsrum og svømmeskole for kommunens børn og unge.</p>
+          <p class="reveal d2">I 2001 fik Carsten Rynt Rechnagel tilladelse til at etablere restaurant i de daværende omklædningsrum — og dermed begyndte det kulinariske kapitel ved søbredden, som vi i dag viderefører med stolthed og kærlighed.</p>
+          <p class="reveal d2">Furesøen er Danmarks dybeste sø med en dybde på op til 38 meter og blåt flag-strand. Området er fredet og omgivet af storslået natur — Frederiksdals historiske vandmølle, bådudlejning og ruinerne af Hjortholms borg er alle inden for kort afstand.</p>
+          <div class="history-stats">
+            <div class="h-stat reveal">
+              <p class="h-stat-num">1943</p>
+              <p>Grundlagt som offentligt fribad</p>
+            </div>
+            <div class="h-stat reveal d1">
+              <p class="h-stat-num">2001</p>
+              <p>Restaurant åbner ved søen</p>
+            </div>
+            <div class="h-stat reveal d2">
+              <p class="h-stat-num">38m</p>
+              <p>Furesøens dybde — Danmarks dybeste sø</p>
+            </div>
+            <div class="h-stat reveal d3">
+              <p class="h-stat-num">15m</p>
+              <p>Fra bordet til vandkanten</p>
+            </div>
+          </div>
+        </div>
+        <div class="history-visual reveal d1">
+          <div class="history-img">
+            <img src="./Skærmbillede 2026-03-07 kl. 10.43.22.png" alt="Strand og søudsigt ved Frederiksdal Fribad">
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /page-omos -->
+
+  <!-- ─ KONTAKT ─ -->
+  <div class="page" id="page-kontakt">
+    <div class="nav-push"></div>
+
+    <section id="contact">
+      <div class="contact-inner">
+        <div>
+          <img class="contact-img reveal" src="https://fribad.dk/wp-content/uploads/2017/12/PPS_3457_LOW-cropped.jpg" alt="Bordopdækning ved Frederiksdal Fribad">
+          <p class="s-label reveal">Find Os</p>
+          <h2 class="s-title reveal d1">Åbningstider<br>& Kontakt</h2>
+          <div class="hours-block reveal d2">
+            <h4>Restaurant</h4>
+            <div class="hours-row">
+              <span>Dagligt i sæsonen</span>
+              <span class="t">17:00 – 22:00</span>
+            </div>
+          </div>
+          <div class="hours-block reveal d2">
+            <h4>Iskiosk</h4>
+            <div class="hours-row">
+              <span>Dagligt i sæsonen</span>
+              <span class="t">10:00 – 22:00</span>
+            </div>
+          </div>
+          <div class="hours-block reveal d2">
+            <h4>Sæson 2026</h4>
+            <div class="hours-row"><span>Åbner</span><span class="t">25. april</span></div>
+            <div class="hours-row"><span>Lukker</span><span class="t">28. september</span></div>
+          </div>
+          <div class="c-details reveal d3">
+            <div class="c-row">
+              <strong>Telefon</strong>
+              <a href="tel:+4531407446">+45 31 40 74 46</a>
+            </div>
+            <div class="c-row">
+              <strong>E-mail</strong>
+              <a href="mailto:frederiksdal@fribad.dk">frederiksdal@fribad.dk</a>
+            </div>
+            <div class="c-row">
+              <strong>Adresse</strong>
+              <span>Frederiksdal Badesti 1,<br>2830 Virum</span>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form reveal d2">
+          <h3>Skriv til os</h3>
+          <div class="f-row">
+            <div class="f-group">
+              <label class="f-label">Navn</label>
+              <input type="text" class="f-input" placeholder="Dit fulde navn">
+            </div>
+            <div class="f-group">
+              <label class="f-label">Telefon</label>
+              <input type="tel" class="f-input" placeholder="+45 00 00 00 00">
+            </div>
+          </div>
+          <div class="f-group">
+            <label class="f-label">E-mail</label>
+            <input type="email" class="f-input" placeholder="din@email.dk">
+          </div>
+          <div class="f-group">
+            <label class="f-label">Besked</label>
+            <textarea class="f-input" placeholder="Fortæl os om dit arrangement, spørgsmål eller forespørgsel..."></textarea>
+          </div>
+          <button class="f-submit">Send Besked</button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /page-kontakt -->
+
+</div><!-- /pages -->
+
+<!-- ════ FOOTER — always visible ════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="./Skærmbillede 2026-03-06 kl. 18.47.30.png" alt="Frederiksdal Fribad">
+        <p>Brasiliansk churrasco og salatbuffet — 15 meter fra Furesøens vand med solnedgangsudtsigt over søen.</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/frederiksdalfribad" class="s-link" target="_blank" rel="noopener" aria-label="Facebook">f</a>
+          <a href="https://www.instagram.com/frederiksdal_fribad" class="s-link" target="_blank" rel="noopener" aria-label="Instagram">ig</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a data-page="hjem" href="#">Hjem</a></li>
+          <li><a data-page="restauranten" href="#">Restauranten</a></li>
+          <li><a data-page="selskaber" href="#">Selskaber</a></li>
+          <li><a data-page="omos" href="#">Om Os</a></li>
+          <li><a data-page="kontakt" href="#">Kontakt</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Åbningstider</h4>
+        <p>Restaurant<br>17:00 – 22:00 dagligt</p>
+        <br>
+        <p>Iskiosk<br>10:00 – 22:00 dagligt</p>
+        <br>
+        <p>Sæson:<br>25. apr. – 28. sep. 2026</p>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <p>
+          <a href="tel:+4531407446">+45 31 40 74 46</a><br>
+          <small style="opacity:0.6;">14:00–22:00 i sæsonen</small>
+        </p>
+        <br>
+        <p><a href="mailto:frederiksdal@fribad.dk">frederiksdal@fribad.dk</a></p>
+        <br>
+        <p>Frederiksdal Badesti 1<br>2830 Virum</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Frederiksdal Fribad — Alle rettigheder forbeholdes</p>
+      <p>Frederiksdal Badesti 1 · 2830 Virum</p>
+      <a href="https://www.findsmiley.dk/987557" target="_blank" rel="noopener" aria-label="Se kontrolrapport på Findsmiley" style="display:inline-block; opacity:0.85; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">
+        <img src="./Skærmbillede%202026-03-07%20kl.%2021.21.22.png" alt="Se kontrol rapport" style="height:44px; display:block;">
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nb = document.getElementById('navbar');
+  const validPages = ['hjem', 'restauranten', 'selskaber', 'omos', 'kontakt'];
+
+  function triggerReveals(container) {
+    container.querySelectorAll('.reveal').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), 80 + i * 55);
+    });
+  }
+
+  function showPage(id) {
+    if (!validPages.includes(id)) id = 'hjem';
+
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active', 'page-enter'));
+    const page = document.getElementById('page-' + id);
+    page.classList.add('active');
+    // Trigger animation on next frame
+    requestAnimationFrame(() => page.classList.add('page-enter'));
+
+    window.scrollTo(0, 0);
+
+    // Nav active state
+    document.querySelectorAll('[data-page]').forEach(a => {
+      a.classList.toggle('nav-active', a.dataset.page === id);
+    });
+
+    // Navbar color: always dark except home (scroll-based)
+    if (id === 'hjem') {
+      nb.classList.toggle('scrolled', window.scrollY > 55);
+    } else {
+      nb.classList.add('scrolled');
+    }
+
+    // Trigger reveal animations
+    triggerReveals(page);
+
+    // Hash
+    history.pushState(null, '', id === 'hjem' ? location.pathname : '#' + id);
+  }
+
+  // Hamburger menu
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  menuToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = navLinks.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open);
+    menuToggle.textContent = open ? '✕' : '☰';
+  });
+
+  function closeMenu() {
+    navLinks.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.textContent = '☰';
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', e => {
+    if (!nb.contains(e.target)) closeMenu();
+  });
+
+  // Wire all [data-page] links
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-page]');
+    if (!el) return;
+    e.preventDefault();
+    closeMenu();
+    showPage(el.dataset.page);
+  });
+
+  // Scroll indicator on home page
+  document.getElementById('hero-scroll-btn').addEventListener('click', () => {
+    document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Nav scroll effect (home page only)
+  window.addEventListener('scroll', () => {
+    if (document.getElementById('page-hjem').classList.contains('active')) {
+      nb.classList.toggle('scrolled', window.scrollY > 55);
+    }
+  }, { passive: true });
+
+  // Init from hash
+  const hash = location.hash.slice(1);
+  showPage(validPages.includes(hash) ? hash : 'hjem');
+</script>
+</body>
+</html>
