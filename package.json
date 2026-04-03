@@ -3,6 +3,8 @@
     "puppeteer": "^24.38.0"
   },
   "devDependencies": {
-    "sharp": "^0.34.5"
+    "@tailwindcss/cli": "^4.2.2",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^4.2.2"
   }
 }
