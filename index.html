@@ -9,6 +9,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Google Analytics — loaded only after cookie consent -->
+  <script>
+    function loadGA() {
+      var s = document.createElement('script');
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-TZLJDNZ6CW';
+      s.async = true;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-TZLJDNZ6CW');
+    }
+  </script>
+
   <style>
     :root {
       --coral:        #E8765A;
@@ -736,6 +751,91 @@
 </head>
 <body>
 
+<!-- Cookie Consent Banner -->
+<div id="cookie-banner" style="
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: rgba(13, 31, 53, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(232, 118, 90, 0.25);
+  padding: 20px 24px;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+">
+  <div style="
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  ">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;opacity:0.7" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" stroke="#F4B942" stroke-width="1.5"/>
+      <circle cx="8.5" cy="9.5" r="1.5" fill="#F4B942"/>
+      <circle cx="14" cy="7" r="1" fill="#F4B942"/>
+      <circle cx="15.5" cy="13.5" r="1.5" fill="#F4B942"/>
+      <circle cx="9" cy="15" r="1" fill="#F4B942"/>
+      <circle cx="12" cy="12" r="1" fill="#F4B942"/>
+    </svg>
+    <p style="
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: rgba(250, 246, 239, 0.85);
+      line-height: 1.6;
+      flex: 1;
+      min-width: 220px;
+      margin: 0;
+    ">
+      Vi bruger cookies til at analysere trafikken på vores hjemmeside med Google Analytics.
+      Dine data bruges anonymt til at forbedre din oplevelse.
+    </p>
+    <div style="display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap;">
+      <button id="cookie-reject" style="
+        font-family: 'Jost', sans-serif;
+        font-weight: 400;
+        font-size: 0.8125rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(250, 246, 239, 0.6);
+        background: transparent;
+        border: 1px solid rgba(250, 246, 239, 0.2);
+        padding: 9px 20px;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: color 0.2s ease, border-color 0.2s ease;
+      "
+      onmouseover="this.style.color='rgba(250,246,239,0.9)';this.style.borderColor='rgba(250,246,239,0.45)'"
+      onmouseout="this.style.color='rgba(250,246,239,0.6)';this.style.borderColor='rgba(250,246,239,0.2)'"
+      >Afvis</button>
+      <button id="cookie-accept" style="
+        font-family: 'Jost', sans-serif;
+        font-weight: 500;
+        font-size: 0.8125rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #FAF6EF;
+        background: #E8765A;
+        border: 1px solid #E8765A;
+        padding: 9px 24px;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.15s ease;
+      "
+      onmouseover="this.style.background='#F0977F';this.style.borderColor='#F0977F'"
+      onmouseout="this.style.background='#E8765A';this.style.borderColor='#E8765A'"
+      >Accepter</button>
+    </div>
+  </div>
+</div>
+
 <!-- SVG filter: removes white background from logo PNG -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
   <defs>
@@ -1216,6 +1316,45 @@
   // Init from hash
   const hash = location.hash.slice(1);
   showPage(validPages.includes(hash) ? hash : 'hjem');
+
+  // Cookie consent
+  (function() {
+    var banner = document.getElementById('cookie-banner');
+    var consent = localStorage.getItem('cookie_consent');
+
+    function showBanner() {
+      banner.style.display = 'block';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          banner.style.transform = 'translateY(0)';
+          banner.style.opacity = '1';
+        });
+      });
+    }
+
+    function hideBanner() {
+      banner.style.transform = 'translateY(100%)';
+      banner.style.opacity = '0';
+      setTimeout(function() { banner.style.display = 'none'; }, 450);
+    }
+
+    if (consent === 'accepted') {
+      loadGA();
+    } else if (consent === null) {
+      showBanner();
+    }
+
+    document.getElementById('cookie-accept').addEventListener('click', function() {
+      localStorage.setItem('cookie_consent', 'accepted');
+      loadGA();
+      hideBanner();
+    });
+
+    document.getElementById('cookie-reject').addEventListener('click', function() {
+      localStorage.setItem('cookie_consent', 'rejected');
+      hideBanner();
+    });
+  })();
 </script>
 </body>
 </html>
