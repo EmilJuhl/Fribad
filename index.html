@@ -6,6 +6,7 @@
   <title>Frederiksdal Fribad — Brasiliansk Churrasco ved Furesøen</title>
   <meta name="description" content="Brasiliansk churrasco og frisk salatbuffet ved Furesøen. Restaurant, iskiosk og catering til selskaber. Åbent dagligt april–september. Frederiksdal, Virum.">
   <link rel="canonical" href="https://fribad.vercel.app/">
+  <link rel="preload" as="image" href="./Sk%C3%A6rmbillede%202026-03-07%20kl.%2013.00.19.webp" type="image/webp" fetchpriority="high">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
   <!-- Open Graph -->
@@ -66,8 +67,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+  <script src="https://cdn.tailwindcss.com" defer></script>
 
   <!-- Google Analytics — loaded only after cookie consent -->
   <script>
@@ -183,7 +186,7 @@
     }
     .hero-bg {
       position: absolute; inset: 0;
-      background: url('./Skærmbillede%202026-03-07%20kl.%2013.00.19.png') center 65% / cover no-repeat;
+      background: url('./Skærmbillede%202026-03-07%20kl.%2013.00.19.webp') center 65% / cover no-repeat;
       animation: heroZoom 18s ease-out forwards;
       transform-origin: center center;
     }
@@ -912,7 +915,7 @@
 <!-- ════ NAV ════ -->
 <nav id="navbar">
   <a class="nav-logo" data-page="hjem" href="#">
-    <img src="./Skærmbillede 2026-03-06 kl. 18.47.30.png" alt="Frederiksdal Fribad">
+    <img src="./Skærmbillede 2026-03-06 kl. 18.47.30.webp" alt="Frederiksdal Fribad">
   </a>
   <ul class="nav-links">
     <li><a data-page="restauranten" href="#">Restauranten</a></li>
@@ -1007,7 +1010,7 @@
           </div>
         </div>
         <div class="welcome-img reveal d2">
-          <img src="./Skærmbillede 2026-03-07 kl. 10.45.15.png" alt="Udendørs servering ved Furesøen">
+          <img src="./Skærmbillede 2026-03-07 kl. 10.45.15.webp" alt="Udendørs servering ved Furesøen" loading="lazy">
         </div>
       </div>
     </section>
@@ -1100,7 +1103,7 @@
             </div>
           </div>
           <div class="events-img reveal d2">
-            <img src="./Skærmbillede 2026-03-07 kl. 10.44.06.png" alt="Livredderen selskabslokale">
+            <img src="./Skærmbillede 2026-03-07 kl. 10.44.06.webp" alt="Livredderen selskabslokale" loading="lazy">
           </div>
         </div>
         <div class="venues-grid">
@@ -1158,7 +1161,7 @@
         </div>
         <div class="history-visual reveal d1">
           <div class="history-img">
-            <img src="./Skærmbillede 2026-03-07 kl. 10.43.22.png" alt="Strand og søudsigt ved Frederiksdal Fribad">
+            <img src="./Skærmbillede 2026-03-07 kl. 10.43.22.webp" alt="Strand og søudsigt ved Frederiksdal Fribad" loading="lazy">
           </div>
         </div>
       </div>
@@ -1244,7 +1247,7 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <img src="./Skærmbillede 2026-03-06 kl. 18.47.30.png" alt="Frederiksdal Fribad">
+        <img src="./Skærmbillede 2026-03-06 kl. 18.47.30.webp" alt="Frederiksdal Fribad" loading="lazy">
         <p>Brasiliansk churrasco og salatbuffet — 15 meter fra Furesøens vand med solnedgangsudtsigt over søen.</p>
         <div class="footer-socials">
           <a href="https://www.facebook.com/frederiksdalfribad" class="s-link" target="_blank" rel="noopener" aria-label="Facebook">f</a>
